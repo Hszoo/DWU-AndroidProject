@@ -9,12 +9,12 @@ class CourseRepository(private val courseDao: CourseDao) {
         courseDao.insertCourse(course)
     }
 
-    suspend fun modifyCourse(name: String, description: String) {
-        courseDao.updateCourse(name, description)
+    suspend fun modifyCourse(courseId:Long, name: String, description: String) {
+        courseDao.updateCourse(courseId, name, description)
     }
 
-    suspend fun removeFood(courseName: String) {
-        courseDao.deleteCourse(courseName)
+    suspend fun removeCourse(courseId: Long) {
+        courseDao.deleteCourse(courseId)
     }
 
     suspend fun getAllCourses(country: String) : Flow<List<Course>> = courseDao.getAllCourses()

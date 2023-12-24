@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class Route(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val RouteName: String,
     val courseId: Long,
     val placeId: Long
 )

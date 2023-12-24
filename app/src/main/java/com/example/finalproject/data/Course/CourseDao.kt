@@ -10,11 +10,11 @@ interface CourseDao {
     @Insert
     suspend fun insertCourse(vararg course: Course)
 
-    @Query("UPDATE course_table SET courseName = :name WHERE description = :description")
-    suspend fun updateCourse(name : String, description: String)
+    @Query("UPDATE course_table SET courseName = :name, description =:description WHERE courseId = :courseId")
+    suspend fun updateCourse(courseId: Long, name : String, description: String)
 
-    @Query("DELETE FROM course_table WHERE courseName = :courseName")
-    suspend fun deleteCourse(courseName : String)
+    @Query("DELETE FROM course_table WHERE courseId = :courseId")
+    suspend fun deleteCourse(courseId : Long)
 
     @Query("SELECT * FROM course_table")
     fun getAllCourses(): Flow<List<Course>>
