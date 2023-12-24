@@ -31,10 +31,7 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
         }
 
-        // click listener
-        binding.navView.setOnClickListener() {
 
-        }
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
