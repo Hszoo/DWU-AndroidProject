@@ -10,4 +10,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+    <string name="api_url">http://api.kcisa.kr/</string>
+    <string name="api_key">ec2a50a1-5ece-4a1a-af4b-79c9b55f012f</string>
 </resources>

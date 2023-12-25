@@ -1,4 +1,4 @@
-package com.example.finalproject.ui.viewModel
-
-class LocationViewModel {
-}
+//package com.example.finalproject.ui.viewModel
+//
+//class LocationViewModel {
+//}
