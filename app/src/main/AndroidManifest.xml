@@ -18,22 +18,19 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
-        tools:targetApi="31">
+        tools:targetApi="34">
 
 
         <!-- 구글 지도 API 관련 -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBOtUoIOH43fC7ac1-72nSZtvJk_sfAzWQ" />
-
-        <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="cb2cbfd92a1b15918e6bc54971b494fe"/>
 
         <activity
             android:name=".MainActivity"
@@ -44,6 +41,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".DetailActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- intent-filter 등의 설정이 필요할 경우 여기에 추가 -->
         </activity>
     </application>
 

@@ -1,39 +1,40 @@
 package com.example.finalproject.data
 
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.Objects
+data class Root(
+    val response: Response,
+)
 
-data class Place(
+data class Response(
+    val header: Header,
     val body: Body,
-    val header: Header
 )
 
 data class Header(
     val resultCode: String,
-    val resultMsg: String
+    val resultMsg: String,
 )
 
 data class Body(
-    @SerializedName("items")
     val items: Items,
     val numOfRows: String,
     val pageNo: String,
-    val totalCount: String
+    val totalCount: String,
 )
 
 data class Items(
-    val item:List<Item>
+    val item: List<Item>,
 )
+
+@Entity(tableName = "place_table")
 data class Item(
-    val title: String,
-    @SerializedName("issuedDate")
-    val issuedDate: String,
-    val category1: String,
-    val category2: String,
-    val category3: String,
-    val information: String,
-    val tel: String,
-    val url: String,
-    val address: String,
-    val coordinates: String
+    @PrimaryKey(autoGenerate=true)
+    val _id : Int,
+    val title: String?,
+    val information: String?,
+    val address: String?,
 )

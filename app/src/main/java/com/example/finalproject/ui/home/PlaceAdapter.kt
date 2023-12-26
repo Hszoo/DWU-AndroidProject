@@ -5,12 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.data.Item
-import com.example.finalproject.data.Place
 import com.example.finalproject.databinding.ListItemBinding
 
-
-class HomeAdapter : RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
+class PlaceAdapter : RecyclerView.Adapter<PlaceAdapter.HomeHolder>() {
     var places: List<Item>? = null
+    fun setData(newData: List<Item>?) {
+        places = newData
+        notifyDataSetChanged()
+    }
 
     override fun getItemCount(): Int {
         return places?.size ?: 0
@@ -22,8 +24,10 @@ class HomeAdapter : RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
     }
 
     override fun onBindViewHolder(holder: HomeHolder, position: Int) {
-        holder.itemBinding.tvItem.text = places?.get(position).toString()
-        holder.itemBinding.clItem.setOnClickListener{
+        holder.itemBinding.tvPlaceTitle.text = places?.get(position)?.title
+        holder.itemBinding.tvPlaceInfo.text = places?.get(position)?.information
+
+        holder.itemBinding.clItem.setOnClickListener {
             clickListener?.onItemClick(it, position)
         }
     }

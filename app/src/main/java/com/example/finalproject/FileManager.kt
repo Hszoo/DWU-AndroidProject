@@ -14,7 +14,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class FileManager(val context: Context) {
+class FileManager(private val context: Context) {
     val TAG = "FileManager"
 
     fun writeText(fileName: String, data: String) {

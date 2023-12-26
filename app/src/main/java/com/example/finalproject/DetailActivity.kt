@@ -1,53 +1,57 @@
 package com.example.finalproject
-
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import com.example.finalproject.data.Item
+import com.example.finalproject.data.PlaceDao
+import com.example.finalproject.data.PlaceDatabase
 import com.example.finalproject.databinding.ActivityDetailBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailActivity : AppCompatActivity() {
-    val TAG = "FILEMANAGER"
-    val detailBinding by lazy {
+    private val TAG = "Detail Activity"
+    private val detailBinding by lazy {
         ActivityDetailBinding.inflate(layoutInflater)
     }
-    // file manager 객체 생성
-    val fileManager: FileManager by lazy {
-        FileManager(applicationContext)
-    }
-    /* 파일 저장시간 저장 -> 파일 save, read, delete에 사용 */
-    var savedTime : String? = null
-    var recentFile : String? = null
+
+    private lateinit var db: PlaceDatabase
+    private lateinit var placeDao: PlaceDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(detailBinding.root)
 
-        // mainActivity -> 이미지 url
-        val url = intent.getStringExtra("url")
-        // 이미지 url 확인
-        Log.d(TAG, url.toString())
+        val title = intent.getStringExtra("title")
+        val address = intent.getStringExtra("address")
+        val information = intent.getStringExtra("information")
+
+        detailBinding.tvPlaceTitle.setText(title)
+        detailBinding.tvPlaceInfo.setText(information)
+        detailBinding.tvAddr.setText(address)
+
+        db = PlaceDatabase.getDatabase(applicationContext)
+        placeDao = db.placeDao()
+
+        val fileManager: FileManager by lazy {
+            FileManager(this)
+        }
 
         detailBinding.btnSave.setOnClickListener {
-            savedTime = fileManager.getCurrentTime()
-            recentFile = savedTime
-            fileManager.writeImage("${savedTime}.jpg", url.toString())
-        }
+            val place = Item(-1, title, address, information)
 
-        detailBinding.btnRead.setOnClickListener {
-            Log.d(TAG, "load image"+ savedTime);
-            if (url != null) {
-                Log.d("이미지 로드 중인데", "null아님")
-                fileManager.readInternetImage(url, detailBinding.imgBookCover)
+
+            // 코루틴을 사용하여 백그라운드 스레드에서 데이터베이스에 삽입 작업 수행
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    placeDao.insertPlace(place)
+                }
+
+                // UI 업데이트는 메인 스레드에서 수행
+                Log.d(TAG, "Inserted into place_table: $title $address $information")
             }
-        }
-
-        detailBinding.btnInit.setOnClickListener {
-            detailBinding.imgBookCover.setImageResource(R.mipmap.ic_launcher)
-        }
-
-        detailBinding.btnRemove.setOnClickListener {
-            // 파일 명으로 삭제 하기
-            fileManager.deleteImage("${savedTime}.jpg", url.toString())
         }
     }
 }
