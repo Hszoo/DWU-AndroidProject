@@ -1,12 +1,8 @@
 package com.example.finalproject.ui.home
 
-import android.content.Intent
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.Glide
-import com.example.finalproject.DetailActivity
 import com.example.finalproject.data.Item
 import com.example.finalproject.data.Root
 

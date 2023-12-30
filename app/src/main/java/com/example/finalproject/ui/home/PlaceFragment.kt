@@ -11,14 +11,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.example.finalproject.DetailActivity
 import com.example.finalproject.R
-import com.example.finalproject.data.Item
 import com.example.finalproject.data.Root
 import com.example.finalproject.databinding.FragmentHomeBinding
 import com.example.finalproject.network.IParkAPIService
-import com.google.android.gms.location.places.Place
 import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
@@ -108,10 +104,6 @@ class PlaceFragment : Fragment() {
                 val title = adapter.places?.get(position)?.title
                 val address = adapter.places?.get(position)?.address
                 val information = adapter.places?.get(position)?.information
-
-//                Glide.with(requireContext())
-//                    .load(url)
-//                    .into(binding.imageView)
 
                 val intent = Intent(requireContext(), DetailActivity::class.java)
                 intent.putExtra("title", title)

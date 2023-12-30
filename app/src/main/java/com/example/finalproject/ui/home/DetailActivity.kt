@@ -1,15 +1,15 @@
-package com.example.finalproject
+package com.example.finalproject.ui.home
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.lifecycleScope
+import com.example.finalproject.FileManager
 import com.example.finalproject.data.Item
 import com.example.finalproject.data.PlaceDao
 import com.example.finalproject.data.PlaceDatabase
 import com.example.finalproject.databinding.ActivityDetailBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DetailActivity : AppCompatActivity() {
     private val TAG = "Detail Activity"
@@ -28,9 +28,9 @@ class DetailActivity : AppCompatActivity() {
         val address = intent.getStringExtra("address")
         val information = intent.getStringExtra("information")
 
-        detailBinding.tvPlaceTitle.setText(title)
-        detailBinding.tvPlaceInfo.setText(information)
-        detailBinding.tvAddr.setText(address)
+        detailBinding.tvPlaceTitle.text = title
+        detailBinding.tvPlaceInfo.text = address
+        detailBinding.tvAddr.text = information
 
         db = PlaceDatabase.getDatabase(applicationContext)
         placeDao = db.placeDao()
@@ -40,18 +40,18 @@ class DetailActivity : AppCompatActivity() {
         }
 
         detailBinding.btnSave.setOnClickListener {
-            val place = Item(-1, title, address, information)
+            Log.d(TAG, "ADD Place: $title $address $information")
+            addPlace(Item(0, title, information, address))
+        }
+        detailBinding.btnBack.setOnClickListener {
+            finish()
+        }
 
+    }
 
-            // 코루틴을 사용하여 백그라운드 스레드에서 데이터베이스에 삽입 작업 수행
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    placeDao.insertPlace(place)
-                }
-
-                // UI 업데이트는 메인 스레드에서 수행
-                Log.d(TAG, "Inserted into place_table: $title $address $information")
-            }
+    fun addPlace(place: Item) {
+        CoroutineScope(Dispatchers.IO).launch {
+            placeDao.insertPlace(place)
         }
     }
 }

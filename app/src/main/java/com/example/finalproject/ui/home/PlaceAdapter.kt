@@ -44,4 +44,5 @@ class PlaceAdapter : RecyclerView.Adapter<PlaceAdapter.HomeHolder>() {
         this.clickListener = listener
     }
 
+
 }

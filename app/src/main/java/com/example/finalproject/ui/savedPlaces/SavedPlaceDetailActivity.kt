@@ -10,18 +10,15 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.finalproject.R
-import com.example.finalproject.databinding.FragmentSlideshowBinding
+import com.example.finalproject.data.PlaceDao
+import com.example.finalproject.data.PlaceDatabase
+import com.example.finalproject.ui.savedPlaces.SlideshowViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -31,7 +28,6 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -41,57 +37,56 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Locale
+import androidx.appcompat.app.AppCompatActivity
+import com.example.finalproject.databinding.ActivitySavedPlaceDetailBinding
 
-class SlideshowFragment : Fragment() {
+public class SavedPlaceDetailActivity : AppCompatActivity()  {
 
-    private val TAG = "ShowMyParksFragment"
-    private var _binding: FragmentSlideshowBinding? = null
+    private val TAG = "SavedPlacesDetailActivity"
+    private val savedPlaceBinding by lazy {
+        ActivitySavedPlaceDetailBinding.inflate(layoutInflater)
+    }
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var db: PlaceDatabase
+    private lateinit var placeDao: PlaceDao
 
     /* 지도 관련 */
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var geocoder: Geocoder
     private lateinit var currentLoc: Location
 
-
     /* 구글 맵 타입의 멤버 변수로 제도를 저장할 멤버 변수 선언 */
     private lateinit var googleMap: GoogleMap
     var centerMarker: Marker? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(savedPlaceBinding.root)
+
         val slideshowViewModel =
             ViewModelProvider(this).get(SlideshowViewModel::class.java)
 
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        val title = intent.getStringExtra("title")
+        val address = intent.getStringExtra("address")
+        val information = intent.getStringExtra("information")
+
+        savedPlaceBinding.tvTitle.text = title
+        savedPlaceBinding.tvInfo.text = address
+        savedPlaceBinding.tvAddr.text = information
+
+        db = PlaceDatabase.getDatabase(this)
+        placeDao = db.placeDao()
 
         // 지도 관련
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        geocoder = Geocoder(requireContext(), Locale.getDefault())
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        geocoder = Geocoder(this, Locale.getDefault())
         getLastLocation()   // 최종위치 확인
-
-        val textView: TextView = binding.textSlideshow
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
 
         showData("Geocoder isEnabled: ${Geocoder.isPresent()}")
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id .mapViewHome) as? SupportMapFragment
-        mapFragment?.getMapAsync(mapReadyCallback)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+//        val mapFragment =
+//            childFragmentManager.findFragmentById(R.id.mapViewHome) as? SupportMapFragment
+//        mapFragment?.getMapAsync(mapReadyCallback)
     }
 
     /*GoogleMap 로딩이 완료될 경우 실행하는 Callback*/
@@ -105,17 +100,17 @@ class SlideshowFragment : Fragment() {
             // infoWindow까지 띄우려면 false 지정해야됨
             // true : 클릭 이벤트 처리가 여기까지
             googleMap.setOnMarkerClickListener {
-                Toast.makeText(activity, it.tag.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, it.tag.toString(), Toast.LENGTH_SHORT).show()
                 false
             }
             googleMap.setOnInfoWindowClickListener {
-                Toast.makeText(activity, it.title, Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, it.title, Toast.LENGTH_SHORT).show()
             }
             googleMap.setOnMapClickListener {
-                Toast.makeText(activity, it.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_SHORT).show()
             }
             googleMap.setOnMapLongClickListener {
-                Toast.makeText(activity, it.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -152,7 +147,7 @@ class SlideshowFragment : Fragment() {
 
     /* 지도 관련 메서드 정의 */
     private fun showData(data: String) {
-        binding.textSlideshow.setText(binding.textSlideshow.text.toString() + "\n${data}")
+//        binding.textView3.setText(binding.textView3.text.toString() + "\n${data}")
     }
 
     /*위치 정보 수신 시 수행할 동작을 정의하는 Callback (비동기 방식) */
@@ -248,12 +243,12 @@ class SlideshowFragment : Fragment() {
 
         fun checkPermissions() {
             if (ContextCompat.checkSelfPermission(
-                    requireContext(),
+                    this,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
                 == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(
-                    requireContext(),
+                    this,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
                 == PackageManager.PERMISSION_GRANTED
@@ -268,7 +263,6 @@ class SlideshowFragment : Fragment() {
                 )
             }
         }
-
 
     }
 }
