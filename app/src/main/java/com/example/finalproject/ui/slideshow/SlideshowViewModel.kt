@@ -1,4 +1,4 @@
-package com.example.finalproject.ui.savedPlaces
+package com.example.finalproject.ui.slideshow
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

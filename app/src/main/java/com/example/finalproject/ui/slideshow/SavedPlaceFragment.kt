@@ -1,52 +1,22 @@
-package com.example.finalproject.ui.savedPlaces
+package com.example.finalproject.ui.slideshow
 
-import android.Manifest
-import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.Geocoder
-import android.location.Location
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.finalproject.R
 import com.example.finalproject.data.PlaceDao
 import com.example.finalproject.data.PlaceDatabase
 import com.example.finalproject.databinding.ActivitySavedPlaceBinding
+import com.example.finalproject.databinding.ActivitySavedPlaceDetailBinding
 import com.example.finalproject.ui.home.PlaceAdapter
-import com.example.finalproject.ui.slideshow.SavedPlaceDetailActivity
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
 
 class SavedPlaceFragment : Fragment() {
 
@@ -82,8 +52,6 @@ class SavedPlaceFragment : Fragment() {
 
         getPlaces()
 
-        return root
-
         adapter.setOnItemClickListener(object : PlaceAdapter.OnItemClickListner {
             override fun onItemClick(view: View, position: Int) {
                 val title = adapter.places?.get(position)?.title
@@ -98,6 +66,8 @@ class SavedPlaceFragment : Fragment() {
                 startActivity(intent)
             }
         })
+
+        return root
     }
 
     private fun getPlaces() {
